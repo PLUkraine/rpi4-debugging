@@ -49,11 +49,8 @@ You need to setup TFTP, NFS and U-Boot on the host machine.
 # install NFS
 sudo dnf install nfs-utils
 
-# unpack Buildroot rootfs (ext4 filesystem image) into NFS root
-sudo mkdir -p /mnt/rpi-rootfs
-sudo mount -o loop output/images/rootfs.ext2 /mnt/rpi-rootfs
-sudo cp -a /mnt/rpi-rootfs/. /srv/nfs/rpi4-root
-sudo umount /mnt/rpi-rootfs
+# create required folders
+sudo mkdir -p /srv/nfs/rpi4-root
 # make rootfs discoverable by RPI4
 echo '/srv/nfs/rpi4-root *(rw,sync,no_subtree_check,no_root_squash)' | sudo tee -a /etc/exports
 
@@ -76,11 +73,8 @@ sudo firewall-cmd --reload
 # install NFS
 sudo apt install nfs-kernel-server
 
-# unpack Buildroot rootfs (ext4 filesystem image) into NFS root
-sudo mkdir -p /mnt/rpi-rootfs
-sudo mount -o loop output/images/rootfs.ext2 /mnt/rpi-rootfs
-sudo cp -a /mnt/rpi-rootfs/. /srv/nfs/rpi4-root
-sudo umount /mnt/rpi-rootfs
+# create required folders
+sudo mkdir -p /srv/nfs/rpi4-root
 # make rootfs discoverable by RPI4
 echo '/srv/nfs/rpi4-root *(rw,sync,no_subtree_check,no_root_squash)' | sudo tee -a /etc/exports
 
@@ -96,15 +90,6 @@ sudo ufw allow from any to any port 111   # rpcbind
 sudo ufw allow from any to any port 2049  # nfs
 ```
 
-Make sure to download Bootlin lab data from https://bootlin.com/training/debugging/. 
-Put the unarchived lab data in `/srv/nfs/rpi4-root/root`
-
-```bash
-wget https://bootlin.com/doc/training/debugging/debugging-beagleplay-labs.tar.xz
-tar xf debugging-beagleplay-labs.tar.xz
-sudo cp -a debugging-beagleplay-labs/nfsroot/root/* /srv/nfs/rpi4-root/root
-```
-
 ## Setup TFTP
 
 ### Fedora
@@ -115,12 +100,11 @@ sudo dnf install tftp-server
 
 # copy Linux Image and Device Tree to TFTP root
 sudo mkdir -p /var/lib/tftpboot
-sudo cp output/images/Image /var/lib/tftpboot/
-sudo cp output/images/bcm2711-rpi-4-b-merged.dtb /var/lib/tftpboot/   # base dtb + overlay, merged on host
 
 # enable the service and firewall rules
 sudo systemctl enable --now tftp.socket
-sudo firewall-cmd --add-service=tftp
+sudo firewall-cmd --permanent --add-service=tftp
+sudo firewall-cmd --reload
 ```
 
 ### Ubuntu
@@ -129,10 +113,8 @@ sudo firewall-cmd --add-service=tftp
 # install the TFTP server
 sudo apt install tftpd-hpa
 
-# copy Linux Image and Device Tree to TFTP root
+# create required folders
 sudo mkdir -p /srv/tftp
-sudo cp output/images/Image /srv/tftp/
-sudo cp output/images/bcm2711-rpi-4-b-merged.dtb /srv/tftp/
 
 # enable the service and firewall rules
 # /etc/default/tftpd-hpa should point TFTP_DIRECTORY at /srv/tftp
@@ -140,26 +122,32 @@ sudo systemctl enable --now tftpd-hpa
 sudo ufw allow 69/udp
 ```
 
-## U-Boot
+## Syncing TFTP and NFS
 
-Find your host ip address
+Run the following command (from the **Buildroot** folder) to copy image files to TFTP and NFS hosting destinations.
 
 ```bash
-sudo ip -br a
-# example:
-# lo               UNKNOWN        127.0.0.1/8 ::1/128 
-# bridge0          UP             192.168.88.6/24
+make BR2_EXTERNAL=../rpi4-debugging sync
 ```
 
-Open `board/raspberrypi4-64/uboot.fragment` and change IP addresses accordingly. 
-Change ipaddr to anything within your /24 network.
+## Place Bootlin Lab Data in NFS
+
+Make sure to download Bootlin lab data from https://bootlin.com/training/debugging/. 
+Put the unarchived lab data in `/srv/nfs/rpi4-root/root`
+
+```bash
+wget https://bootlin.com/doc/training/debugging/debugging-beagleplay-labs.tar.xz
+tar xf debugging-beagleplay-labs.tar.xz
+sudo mkdir -p /srv/nfs/rpi4-root/root
+sudo cp -a debugging-beagleplay-labs/nfsroot/root/* /srv/nfs/rpi4-root/root
+```
 
 ## Flashing the SD Card
 
 After building the image, use `dd` to copy the image to your microSD card.  
 
 **Danger!** Make sure you are flashing the right block device! 
-It is quite common to format a drive you did not meant to!
+It is quite common to format a drive you did not mean to!
 
 List your block devices before and after connecting the SD card:
 
@@ -177,7 +165,15 @@ sudo dd if=output/images/sdcard.img of=<your /dev/sdb> bs=4M status=progress con
 
 Now you have a netboot-capable host and target.
 
-Next connect UART-to-USB to RPI4. On your host `/dev/ttyUSB0` should appear. 
+Next connect UART-to-USB to RPI4. Find UART and Ground pins on this [page](https://learn.sparkfun.com/tutorials/introduction-to-the-raspberry-pi-gpio-and-physical-computing/gpio-pins-overview). 
+We need pin 6 (Ground), 8 (TXD) and 10 (RXD).
+
+Make sure the board is not powered on. 
+Connect your UART RX to RPI4 TXD, then UART TX to RPI4 RXD, and then Ground to Ground. 
+
+> **Do not** connect VCC pin on your UART cable! This **will** damage your board!
+
+Keep the board powered off. On your host `/dev/ttyUSB0` should appear. 
 Run `picocom -b 115200 /dev/ttyUSB0` to connect to the RPI4.
 
 Then connect Ethernet cable to RPI4, and make sure it's directly connected to 
