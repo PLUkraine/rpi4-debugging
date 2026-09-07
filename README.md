@@ -154,6 +154,24 @@ sudo ip -br a
 Open `board/raspberrypi4-64/uboot.fragment` and change IP addresses accordingly. 
 Change ipaddr to anything within your /24 network.
 
+## Flashing the SD Card
+
+After building the image, use `dd` to copy the image to your microSD card.  
+
+**Danger!** Make sure you are flashing the right block device! 
+It is quite common to format a drive you did not meant to!
+
+List your block devices before and after connecting the SD card:
+
+```bash
+sudo lsblk -f
+```
+
+Then flash the image:
+
+```bash
+sudo dd if=output/images/sdcard.img of=<your /dev/sdb> bs=4M status=progress conv=fsync && sync
+```
 
 ## Setting Up RPI4 Target
 
@@ -193,3 +211,20 @@ buildroot login:
 Note that `FAIL` in the log is benign.
 
 Enter `root` to login. Type `cat /proc/cmdline` to confirm you are using NFS.
+
+## How to Iterate
+
+Buildroot does not know when it needs to rebuild any target. 
+You need to manually clean and rebuild the image.
+
+Let's say you need to change the Linux kernel image. Run `make linux-dirclean` to 
+clean it, then `make linux && make` to re-build kernel from scratch and update the RPI4 image.
+
+Our setup does not require reflashing the SD card. You just need to update NFS, Linux kernel and device tree. 
+Run the following command from the **Buildroot** folder:
+
+```bash
+make BR2_EXTERNAL=../rpi4-debugging sync
+```
+
+And then just reboot the board with `reboot`.
