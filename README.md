@@ -99,7 +99,9 @@ sudo ufw allow from any to any port 2049  # nfs
 Make sure to download Bootlin lab data from https://bootlin.com/training/debugging/. 
 Put the unarchived lab data in `/srv/nfs/rpi4-root/root`
 
-```
+```bash
+wget https://bootlin.com/doc/training/debugging/debugging-beagleplay-labs.tar.xz
+tar xf debugging-beagleplay-labs.tar.xz
 sudo cp -a debugging-beagleplay-labs/nfsroot/root/* /srv/nfs/rpi4-root/root
 ```
 
