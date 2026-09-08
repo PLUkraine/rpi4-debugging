@@ -182,6 +182,9 @@ the same router as your host. Use a network switch if needed.
 Power RPI4 via USB-C cable. Hit Enter to prevent normal fallback boot into SD card rootfs.
 
 Type the following commands to enable netboot + NFS. Make sure to replace HOST_IP and PI_IP.
+Use `ip -br a` to find your HOST_IP. Assign PI_IP to any free IP within your subnet.
+
+Foe example, if your IP is `192.168.0.3/24`, HOST_IP is 192.168.0.3, and PI_IP can be 192.168.0.50.
 
 ```sh
 setenv bootcmd 'setenv serverip <HOST_IP>; setenv ipaddr <PI_IP>; tftpboot ${kernel_addr_r} Image; tftpboot ${fdt_addr_r} bcm2711-rpi-4-b-merged.dtb; setenv bootargs console=ttyAMA0,115200 root=/dev/nfs rw nfsroot=<HOST_IP>:/srv/nfs/rpi4-root/,nfsvers=3,tcp ip=dhcp::eth0:off; booti ${kernel_addr_r} - ${fdt_addr_r}'

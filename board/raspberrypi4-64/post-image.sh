@@ -2,7 +2,7 @@
 
 set -e
 
-BOARD_DIR="board/raspberrypi4-64"
+BOARD_DIR="${BR2_EXTERNAL_RPI4_LAB_PATH}/board/raspberrypi4-64"
 BOARD_NAME="$(basename ${BOARD_DIR})"
 GENIMAGE_CFG="${BOARD_DIR}/genimage-${BOARD_NAME}.cfg"
 GENIMAGE_TMP="${BUILD_DIR}/genimage.tmp"
