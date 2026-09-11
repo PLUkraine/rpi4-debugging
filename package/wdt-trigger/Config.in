@@ -1,0 +1,4 @@
+config BR2_PACKAGE_WDT_TRIGGER
+	bool "wdt-trigger"
+	help
+	  For Debugging Lab

@@ -1,0 +1,18 @@
+--- a/drivers/watchdog/bcm2835_wdt.c	2026-09-11 16:28:22.599592062 -0700
++++ b/drivers/watchdog/bcm2835_wdt.c	2026-09-11 16:28:26.358210244 -0700
+@@ -86,8 +86,14 @@
+ static unsigned int bcm2835_wdt_get_timeleft(struct watchdog_device *wdog)
+ {
+ 	struct bcm2835_wdt *wdt = watchdog_get_drvdata(wdog);
++	static void __iomem *base_cache;
++	uint32_t ret;
+ 
+-	uint32_t ret = readl_relaxed(wdt->base + PM_WDOG);
++	/* Cache the mapped base address to avoid repeated pointer chasing */
++	if (base_cache)
++			base_cache = wdt->base;
++
++	ret = readl_relaxed(base_cache + PM_WDOG);
+ 	return WDOG_TICKS_TO_SECS(ret & PM_WDOG_TIME_SET);
+ }
+ 
