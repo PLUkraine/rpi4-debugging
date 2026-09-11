@@ -227,3 +227,11 @@ make BR2_EXTERNAL=../rpi4-debugging sync
 ```
 
 And then just reboot the board with `reboot`.
+
+## Resetting RPI4
+
+If we experience a kernel panic, the most reliable way to recover is to power cycle the board.
+
+Alternatively, we can connect 2 pins on the J2 header next to the USB-C socket. Momentarily connect 
+RUN pin with the middle pin (Ground) to trigger a SoC reset.
+
