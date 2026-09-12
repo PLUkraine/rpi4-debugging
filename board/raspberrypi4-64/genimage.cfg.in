@@ -8,6 +8,14 @@ image boot.vfat {
 	size = 64M
 }
 
+image kdump.ext4 {
+	ext4 {
+		label = "kdump"
+	}
+	empty = "true"
+	size = 4G
+}
+
 image sdcard.img {
 	hdimage {
 	}
@@ -21,5 +29,10 @@ image sdcard.img {
 	partition rootfs {
 		partition-type = 0x83
 		image = "rootfs.ext4"
+	}
+
+	partition kdump {
+		partition-type = 0x83
+		image = "kdump.ext4"
 	}
 }

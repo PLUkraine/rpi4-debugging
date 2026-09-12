@@ -13,8 +13,6 @@ CONFIG_UPROBES=y
 CONFIG_KPROBES=y
 CONFIG_BPF_SYSCALL=y
 CONFIG_DEBUG_INFO_BTF=y           # needed for bpftool btf dump / vmlinux.h generation
-
-# Needed later for KEXEC lab
-# CONFIG_KEXEC=y
+CONFIG_KEXEC=y
 # CONFIG_CRASH_DUMP=y
 # CONFIG_PROC_VMCORE=y
