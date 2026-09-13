@@ -27,6 +27,23 @@ sudo apt update && sudo apt install -y \
 
 ## Build an Image
 
+### Customize the kdump partition size
+
+Our lab setup assumes you have a 4GB RAM model. If you have more RAM, change `4GB` in
+`board/raspberrypi4-64/genimage.cfg.in` file:
+
+```
+image kdump.ext4 {
+	ext4 {
+		label = "kdump"
+	}
+	empty = "true"
+	size = 4G       <--------------------- here
+}
+```
+
+## Buildroot Setup
+
 Run these commands in your terminal:
 
 ```bash
@@ -179,7 +196,67 @@ Run `picocom -b 115200 /dev/ttyUSB0` to connect to the RPI4.
 Then connect Ethernet cable to RPI4, and make sure it's directly connected to 
 the same router as your host. Use a network switch if needed.
 
-Power RPI4 via USB-C cable. Hit Enter to prevent normal fallback boot into SD card rootfs.
+Power RPI4 via USB-C cable.
+
+Wait for the board to fully boot. You will be greeted by a similar prompt:
+
+```log
+Starting network: [    3.992673] bcmgenet fd580000.ethernet: configuring instance for external RGMII (RX delay)
+[    4.002575] bcmgenet fd580000.ethernet eth0: Link is Down
+udhcpc: started, v1.37.0
+udhcpc: broadcasting discover
+udhcpc: no lease, forking to background
+OK
+Starting crond: OK
+Starting dropbear sshd: [    7.494665] NET: Registered PF_INET6 protocol family
+[    7.504557] Segment Routing with IPv6
+[    7.508561] In-situ OAM (IOAM) with IPv6
+OK
+
+Welcome to Buildroot
+buildroot login: [    8.097452] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[    8.104312] bcmgenet fd580000.ethernet eth0: Link is Up - 1Gbps/Full - flow control rx/tx
+```
+
+Type root and hit Enter. You are logged into Linux as the root user. Check your Linux cmdline:
+
+```bash
+cat /proc/cmdline
+```
+
+This concludes the normal boot from SD card. Next we will setup netboot and NFS rootfs.
+
+### Set up Netboot and NFS
+
+Reboot the board to enter U-Boot again:
+
+```bash
+reboot
+```
+
+When you see this prompt, hit Enter on the keyboard. This will prevent normal fallback boot into SD card rootfs.
+
+```log
+U-Boot 2026.01 (Sep 12 2026 - 13:58:24 -0700)
+
+DRAM:  3.8 GiB
+RPI 4 Model B (0xc03115)
+Core:  213 devices, 17 uclasses, devicetree: board
+MMC:   mmcnr@7e300000: 1, mmc@7e340000: 0
+Loading Environment from FAT... Unable to read "uboot.env" from mmc0:1... 
+In:    serial,usbkbd
+Out:   serial,vidconsole
+Err:   serial,vidconsole
+Net:   eth0: ethernet@7d580000
+
+PCIe BRCM: link up, 5.0 Gbps x1 (SSC)
+starting USB...
+Starting the controller
+USB XHCI 1.00
+Bus xhci_pci: 2 USB Device(s) found
+       scanning usb for storage devices... 0 Storage Device(s) found
+Hit any key to stop autoboot:
+```
 
 Type the following commands to enable netboot + NFS. Make sure to replace HOST_IP and PI_IP.
 Use `ip -br a` to find your HOST_IP. Assign PI_IP to any free IP within your subnet.
