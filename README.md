@@ -312,3 +312,18 @@ If we experience a kernel panic, the most reliable way to recover is to power cy
 Alternatively, we can connect 2 pins on the J2 header next to the USB-C socket. Momentarily connect 
 RUN pin with the middle pin (Ground) to trigger a SoC reset.
 
+## Changes to Bootlin Labs
+
+### kexec lab
+
+BeaglePlay uses different console argument. Replace kexec command from the lab to load the crash kernel:
+
+```bash
+kexec -p /root/kexec/Image --command-line="earlycon=pl011,mmio32,0xfe201000 console=ttyAMA0,115200 nr_cpus=1 reset_devices"
+```
+
+Then trigger the kernel panic via this command:
+
+```bash
+echo c > /proc/sysrq-trigger
+```
