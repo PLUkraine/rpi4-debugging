@@ -12,7 +12,7 @@ We take Buildroot 2026.02.x branch and patch it to setup netboot via U-Boot and 
 sudo dnf install \
     which sed make binutils gcc gcc-c++ bash patch gzip \
     bzip2 tar perl rsync file findutils python3 unzip wget git \
-    picocom
+    picocom cpio bc gnutls-devel
 ```
 
 ### Debian/Ubuntu
