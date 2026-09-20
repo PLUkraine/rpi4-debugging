@@ -22,7 +22,7 @@ sudo apt update && sudo apt install -y \
     build-essential bash bc binutils bzip2 cpio diffutils file \
     g++ gcc gzip make patch perl rsync sed tar unzip wget \
     git libncurses5-dev python3-dev \
-    picocom
+    picocom cpio bc libgnutls28-dev
 ```
 
 ## Build an Image
