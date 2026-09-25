@@ -1,1 +1,2 @@
 source "$BR2_EXTERNAL_RPI4_LAB_PATH/package/wdt-trigger/Config.in"
+source "$BR2_EXTERNAL_RPI4_LAB_PATH/package/mmc-reader/Config.in"
