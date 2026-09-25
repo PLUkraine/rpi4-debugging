@@ -305,10 +305,22 @@ Our setup does not require reflashing the SD card. You just need to update NFS, 
 Run the following command from the **Buildroot** folder:
 
 ```bash
-make BR2_EXTERNAL=../rpi4-debugging sync
+make sync
 ```
 
 And then just reboot the board with `reboot`.
+
+### Clean Rebuild 
+
+```bash
+make clean all
+```
+
+### Save defconfig to a Location
+
+```bash
+make savedefconfig BR2_DEFCONFIG="/path/to/config/folder"
+```
 
 ## Resetting RPI4
 
@@ -319,7 +331,11 @@ RUN pin with the middle pin (Ground) to trigger a SoC reset.
 
 ## Changes to Bootlin Labs
 
-### kexec lab
+### System Status Lab
+
+Run `lab1.sh` before starting the lab.
+
+### Kernel debugging: post-mortem analysis with kexec & kdump Lab
 
 BeaglePlay uses different console argument. Replace kexec command from the lab to load the crash kernel:
 
