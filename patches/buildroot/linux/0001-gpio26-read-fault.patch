@@ -1,0 +1,11 @@
+--- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
++++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+@@ -332,6 +332,8 @@
+ static int bcm2835_gpio_get(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct bcm2835_pinctrl *pc = gpiochip_get_data(chip);
++	if (offset == 26)
++		pc = NULL;
+ 
+ 	return bcm2835_gpio_get_bit(pc, GPLEV0, offset);
+ }

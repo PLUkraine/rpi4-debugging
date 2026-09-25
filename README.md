@@ -335,6 +335,15 @@ RUN pin with the middle pin (Ground) to trigger a SoC reset.
 
 Run `lab1.sh` before starting the lab.
 
+### Kernel debugging: OOPS analysis and KGDB
+
+Use this command instead of `watchdog` to trigger an OOPS:
+
+```bash
+echo 26 > /sys/class/gpio/export
+cat /sys/class/gpio/gpio26/value
+```
+
 ### Kernel debugging: post-mortem analysis with kexec & kdump Lab
 
 BeaglePlay uses different console argument. Replace kexec command from the lab to load the crash kernel:
@@ -346,5 +355,6 @@ kexec -p /root/kexec/Image --command-line="earlycon=pl011,mmio32,0xfe201000 cons
 Then trigger the kernel panic via this command:
 
 ```bash
-echo c > /proc/sysrq-trigger
+echo 26 > /sys/class/gpio/export
+cat /sys/class/gpio/gpio26/value
 ```
