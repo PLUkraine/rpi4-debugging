@@ -12,7 +12,8 @@ We take Buildroot 2026.02.x branch and patch it to setup netboot via U-Boot and 
 sudo dnf install \
     which sed make binutils gcc gcc-c++ bash patch gzip \
     bzip2 tar perl rsync file findutils python3 unzip wget git \
-    picocom cpio bc gnutls-devel
+    picocom cpio bc gnutls-devel \
+    clang llvm elfutils-libelf-devel zlib-devel
 ```
 
 ### Debian/Ubuntu
@@ -22,8 +23,14 @@ sudo apt update && sudo apt install -y \
     build-essential bash bc binutils bzip2 cpio diffutils file \
     g++ gcc gzip make patch perl rsync sed tar unzip wget \
     git libncurses5-dev python3-dev \
-    picocom cpio bc libgnutls28-dev
+    picocom cpio bc libgnutls28-dev \
+    clang llvm libelf-dev zlib1g-dev
 ```
+
+`clang`, `llvm`, libelf and zlib are used by the `bpftool` package: it compiles
+its BPF skeletons with the host clang, strips them with `llvm-strip`, and builds
+a host-side bootstrap binary against the host libelf. Buildroot does not declare
+these host dependencies, so the build fails midway without them.
 
 ## Build an Image
 
