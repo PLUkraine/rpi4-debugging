@@ -10,16 +10,14 @@ KERNEL_NAME="Image"
 # distro-dependent
 TFTP_DIR="TO_BE_SET"
 NFS_SERVICE="TO_BE_SET"
-BUILDROOT_DIR="TO_BE_SET"
 IMAGES_DIR="TO_BE_SET"
 
 parse_args() {
     if [ "$#" -ne 1 ]; then
-        echo "Usage: $0 /path/to/buildroot" >&2
+        echo "Usage: $0 /path/to/buildroot/output/images" >&2
         exit 1
     fi
-    BUILDROOT_DIR="$1"
-    IMAGES_DIR="${BUILDROOT_DIR}/output/images"
+    IMAGES_DIR="$1"
 }
 
 validate_image_built() {
