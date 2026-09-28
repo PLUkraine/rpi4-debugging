@@ -271,15 +271,10 @@ Use `ip -br a` to find your HOST_IP. Assign PI_IP to any free IP within your sub
 Foe example, if the CIDR of your network is `192.168.0.3/24` (NETWORK_MASK `255.255.255.0`), HOST_IP is 192.168.0.3, and PI_IP can be 192.168.0.50.
 
 ```sh
-setenv bootcmd 'setenv serverip <HOST_IP>; setenv ipaddr <PI_IP>; tftpboot ${kernel_addr_r} Image; tftpboot ${fdt_addr_r} bcm2711-rpi-4-b-merged.dtb; setenv bootargs console=ttyAMA0,115200 root=/dev/nfs rw nfsroot=<HOST_IP>:/srv/nfs/rpi4-root/,nfsvers=3,tcp ip=<PI_IP>:<HOST_IP>::<NETWORK_MASK>:<PI_HOSTNAME>:eth0:off; booti ${kernel_addr_r} - ${fdt_addr_r}'
+setenv bootcmd 'setenv serverip <HOST_IP>; setenv ipaddr <PI_IP>; tftpboot ${kernel_addr_r} Image; tftpboot ${fdt_addr_r} bcm2711-rpi-4-b.dtb; setenv bootargs console=ttyAMA0,115200 root=/dev/nfs rw nfsroot=<HOST_IP>:/srv/nfs/rpi4-root/,nfsvers=3,tcp ip=<PI_IP>:<HOST_IP>::<NETWORK_MASK>:<PI_HOSTNAME>:eth0:off; booti ${kernel_addr_r} - ${fdt_addr_r}'
 saveenv
 boot
 ```
-
-### Troubleshooting
-#### NSF Version
-Check the version the NFS host server supports. Sometimes it is `4`. Change the param from `nfsvers=3` to `nfsvers=4`.
-
 
 If everything went smoothly, you will be greeted by the login prompt.
 
@@ -299,6 +294,12 @@ buildroot login:
 Note that `FAIL` in the log is benign.
 
 Enter `root` to login. Type `cat /proc/cmdline` to confirm you are using NFS.
+
+### Troubleshooting
+
+#### NSF Version
+
+Check the version the NFS host server supports. Sometimes it is `4`. Change the param from `nfsvers=3` to `nfsvers=4`.
 
 ## How to Iterate
 

@@ -5,7 +5,7 @@ CONFIG_BOOTCOMMAND="mmc rescan || mmc rescan; fatload mmc 0:1 ${kernel_addr_r} I
 
 # Netboot + NFS setup
 # Make sure to replace 192.168.88.6 with your host IP, and 192.168.88.50 with a correct ip in your local network
-# CONFIG_BOOTCOMMAND="setenv serverip 192.168.88.6; setenv ipaddr 192.168.88.50; tftpboot ${kernel_addr_r} Image; tftpboot ${fdt_addr_r} bcm2711-rpi-4-b-merged.dtb; setenv bootargs console=ttyAMA0,115200 root=/dev/nfs rw nfsroot=192.168.88.6:/srv/nfs/rpi4-root/,nfsvers=3,tcp ip=dhcp::eth0:off; booti ${kernel_addr_r} - ${fdt_addr_r}"
+# CONFIG_BOOTCOMMAND="setenv serverip 192.168.88.6; setenv ipaddr 192.168.88.50; tftpboot ${kernel_addr_r} Image; tftpboot ${fdt_addr_r} bcm2711-rpi-4-b.dtb; setenv bootargs console=ttyAMA0,115200 root=/dev/nfs rw nfsroot=192.168.88.6:/srv/nfs/rpi4-root/,nfsvers=3,tcp ip=dhcp::eth0:off; booti ${kernel_addr_r} - ${fdt_addr_r}"
 
 # Direct cable to a laptop NIC can take more than the default 4 s to autonegotiate.
 CONFIG_PHY_ANEG_TIMEOUT=20000

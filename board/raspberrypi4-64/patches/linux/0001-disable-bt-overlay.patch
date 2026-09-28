@@ -1,0 +1,36 @@
+--- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
++++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+@@ -419,3 +419,33 @@
+ 		eth_led1 = <&phy1>,"led-modes:4";
+ 	};
+ };
++
++// Apply disable-bt-overlay.dts directy
++// This is needed to move serial0 from mini-uart to proper UART, and disable Bluetooth controller that
++// is using UART0 by default
++
++/ {
++	aliases {
++		serial0 = &uart0;
++		serial1 = &uart1;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++};
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	/delete-property/ uart-has-rtscts;
++	status = "okay";
++};
++
++&uart1 {
++	status = "disabled";
++};
++
++&bt {
++	status = "disabled";
++};
