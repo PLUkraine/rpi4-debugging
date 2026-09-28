@@ -1,0 +1,11 @@
+CONFIG_DEBUG_INFO=y
+CONFIG_DEBUG_INFO_DWARF4=y
+CONFIG_GDB_SCRIPTS=y              # needed for lx-symbols in the KGDB module-debugging lab
+CONFIG_MAGIC_SYSRQ=y              # needed for `echo g > /proc/sysrq-trigger`
+CONFIG_PROVE_LOCKING=y
+CONFIG_DEBUG_ATOMIC_SLEEP=y
+CONFIG_DEBUG_KMEMLEAK=y
+CONFIG_DEBUG_FS=y                 # needed for /sys/kernel/debug/kmemleak
+CONFIG_FTRACE=y
+CONFIG_UPROBES=y
+CONFIG_KPROBES=y

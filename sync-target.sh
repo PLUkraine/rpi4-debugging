@@ -4,7 +4,8 @@ set -euo pipefail
 
 # common variables
 NFS_ROOT="/srv/nfs/rpi4-root"
-DTB_NAME="bcm2711-rpi-4-b-merged.dtb"
+DTB_NAME="bcm2711-rpi-4-b.dtb"
+DTB_MERGED_NAME="bcm2711-rpi-4-b-merged.dtb"
 ROOTFS_NAME="rootfs.ext2"
 KERNEL_NAME="Image"
 # distro-dependent
@@ -62,7 +63,8 @@ update_tftp() {
     echo "==> Updating TFTP (${TFTP_DIR})"
     sudo mkdir -p "${TFTP_DIR}"
     sudo cp -v "${IMAGES_DIR}/${KERNEL_NAME}" "${TFTP_DIR}/"
-    sudo cp -v "${IMAGES_DIR}/${DTB_NAME}" "${TFTP_DIR}/"
+    sudo cp -v "${IMAGES_DIR}/${DTB_NAME}" "${TFTP_DIR}/" || echo "Warning: ${DTB_NAME} is missing"
+    sudo cp -v "${IMAGES_DIR}/${DTB_MERGED_NAME}" "${TFTP_DIR}/" || echo "Warning: ${DTB_MERGED_NAME} is missing"
 }
 
 cleanup_nfs() {
