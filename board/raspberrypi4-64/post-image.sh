@@ -25,11 +25,6 @@ if [ ! -e "${GENIMAGE_CFG}" ]; then
 		> "${GENIMAGE_CFG}"
 fi
 
-# create merged DT for the netboot
-"${HOST_DIR}/bin/fdtoverlay" -i "${BINARIES_DIR}/bcm2711-rpi-4-b.dtb" \
-	-o "${BINARIES_DIR}/bcm2711-rpi-4-b-merged.dtb" \
-	"${BINARIES_DIR}/rpi-firmware/overlays/miniuart-bt.dtbo"
-
 # Pass an empty rootpath. genimage makes a full copy of the given rootpath to
 # ${GENIMAGE_TMP}/root so passing TARGET_DIR would be a waste of time and disk
 # space. We don't rely on genimage to build the rootfs image, just to insert a
