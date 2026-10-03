@@ -23,7 +23,7 @@ sudo apt update && sudo apt install -y \
     build-essential bash bc binutils bzip2 cpio diffutils file \
     g++ gcc gzip make patch perl rsync sed tar unzip wget \
     git libncurses5-dev python3-dev \
-    picocom cpio bc libgnutls28-dev \
+    picocom cpio bc gnutls-dev libgnutls28-dev \
     clang llvm libelf-dev zlib1g-dev
 ```
 
