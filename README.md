@@ -1,7 +1,7 @@
 # RPI4 Debugging Lab
 
-This is an external Buildroot layer to be used with Raspberry Pi 4B for Bootlin's Debugging Lab. 
-Bootlin does not officially support Raspberry Pi 4B, but it is possible to adapt the lab setup. 
+This is an external Buildroot layer to be used with Raspberry Pi 4B for Bootlin's Debugging Lab.
+Bootlin does not officially support Raspberry Pi 4B, but it is possible to adapt the lab setup.
 We take Buildroot 2026.02.x branch and patch it to setup netboot via U-Boot and NFS rootfs.
 
 ## Prerequisites
@@ -39,13 +39,13 @@ these host dependencies, so the build fails midway without them.
 Our lab setup assumes you have a 4GB RAM model. If you have more RAM, change `4GB` in
 `board/raspberrypi4-64/genimage.cfg.in` file:
 
-```
+```genimage
 image kdump.ext4 {
-	ext4 {
-		label = "kdump"
-	}
-	empty = "true"
-	size = 4G       <--------------------- here
+ ext4 {
+  label = "kdump"
+ }
+ empty = "true"
+ size = 4G       <--------------------- here
 }
 ```
 
@@ -62,12 +62,12 @@ make BR2_EXTERNAL=../rpi4-debugging raspberrypi4_64_defconfig
 make
 ```
 
-This will build the netbootable image at `output/images/sdcard.img`, but does not enable netboot. 
+This will build the netbootable image at `output/images/sdcard.img`, but does not enable netboot.
 You need to setup TFTP, NFS and U-Boot on the host machine.
 
 ## Setup NFS
 
-### Fedora
+### Fedora NFS
 
 ```bash
 # install NFS
@@ -91,7 +91,7 @@ sudo firewall-cmd --permanent --add-service=mountd
 sudo firewall-cmd --reload
 ```
 
-### Debian/Ubuntu (untested!)
+### Debian/Ubuntu NFS
 
 ```bash
 # install NFS
@@ -116,7 +116,7 @@ sudo ufw allow from any to any port 2049  # nfs
 
 ## Setup TFTP
 
-### Fedora
+### Fedora TFTP
 
 ```bash
 # install the TFTP server
@@ -131,7 +131,7 @@ sudo firewall-cmd --permanent --add-service=tftp
 sudo firewall-cmd --reload
 ```
 
-### Ubuntu
+### Ubuntu TFTP
 
 ```bash
 # install the TFTP server
@@ -156,7 +156,7 @@ make BR2_EXTERNAL=../rpi4-debugging sync
 
 ## Place Bootlin Lab Data in NFS
 
-Make sure to download Bootlin lab data from https://bootlin.com/training/debugging/. 
+Make sure to download Bootlin lab data from <https://bootlin.com/training/debugging/>.
 Put the unarchived lab data in `/srv/nfs/rpi4-root/root`
 
 ```bash
@@ -170,7 +170,7 @@ sudo cp -a debugging-beagleplay-labs/nfsroot/root/* /srv/nfs/rpi4-root/root
 
 After building the image, use `dd` to copy the image to your microSD card.  
 
-**Danger!** Make sure you are flashing the right block device! 
+**Danger!** Make sure you are flashing the right block device!
 It is quite common to format a drive you did not mean to!
 
 List your block devices before and after connecting the SD card:
@@ -189,18 +189,18 @@ sudo dd if=output/images/sdcard.img of=<your /dev/sdb> bs=4M status=progress con
 
 Now you have a netboot-capable host and target.
 
-Next connect UART-to-USB to RPI4. Find UART and Ground pins on this [page](https://learn.sparkfun.com/tutorials/introduction-to-the-raspberry-pi-gpio-and-physical-computing/gpio-pins-overview). 
+Next connect UART-to-USB to RPI4. Find UART and Ground pins on this [page](https://learn.sparkfun.com/tutorials/introduction-to-the-raspberry-pi-gpio-and-physical-computing/gpio-pins-overview).
 We need pin 6 (Ground), 8 (TXD) and 10 (RXD).
 
-Make sure the board is not powered on. 
-Connect your UART RX to RPI4 TXD, then UART TX to RPI4 RXD, and then Ground to Ground. 
+Make sure the board is not powered on.
+Connect your UART RX to RPI4 TXD, then UART TX to RPI4 RXD, and then Ground to Ground.
 
 > **Do not** connect VCC pin on your UART cable! This **will** damage your board!
 
-Keep the board powered off. On your host `/dev/ttyUSB0` should appear. 
+Keep the board powered off. On your host `/dev/ttyUSB0` should appear.
 Run `picocom -b 115200 /dev/ttyUSB0` to connect to the RPI4.
 
-Then connect Ethernet cable to RPI4, and make sure it's directly connected to 
+Then connect Ethernet cable to RPI4, and make sure it's directly connected to
 the same router as your host. Use a network switch if needed.
 
 Power RPI4 via USB-C cable.
@@ -278,7 +278,7 @@ boot
 
 If everything went smoothly, you will be greeted by the login prompt.
 
-```
+```log
 Saving 256 bits of creditable seed for next boot
 Starting syslogd: OK
 Starting klogd: OK
@@ -303,13 +303,13 @@ Check the version the NFS host server supports. Sometimes it is `4`. Change the 
 
 ## How to Iterate
 
-Buildroot does not know when it needs to rebuild any target. 
+Buildroot does not know when it needs to rebuild any target.
 You need to manually clean and rebuild the image.
 
-Let's say you need to change the Linux kernel image. Run `make linux-dirclean` to 
+Let's say you need to change the Linux kernel image. Run `make linux-dirclean` to
 clean it, then `make linux && make` to re-build kernel from scratch and update the RPI4 image.
 
-Our setup does not require reflashing the SD card. You just need to update NFS, Linux kernel and device tree. 
+Our setup does not require reflashing the SD card. You just need to update NFS, Linux kernel and device tree.
 Run the following command from the **Buildroot** folder:
 
 ```bash
@@ -318,7 +318,7 @@ make sync
 
 And then just reboot the board with `reboot`.
 
-### Clean Rebuild 
+### Clean Rebuild
 
 ```bash
 make clean all
@@ -334,7 +334,7 @@ make savedefconfig BR2_DEFCONFIG="/path/to/config/folder"
 
 If we experience a kernel panic, the most reliable way to recover is to power cycle the board.
 
-Alternatively, we can connect 2 pins on the J2 header next to the USB-C socket. Momentarily connect 
+Alternatively, we can connect 2 pins on the J2 header next to the USB-C socket. Momentarily connect
 RUN pin with the middle pin (Ground) to trigger a SoC reset.
 
 ## Changes to Bootlin Labs
