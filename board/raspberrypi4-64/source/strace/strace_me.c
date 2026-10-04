@@ -21,7 +21,7 @@ int main(void)
 	signal(SIGALRM, sig_alarm);
 	kill(0, SIGALRM);
 
-	open("/etc/init.d/S20urandom", O_RDONLY);
+	open("/etc/init.d/S01seedrng", O_RDONLY);
 	open("/etc/config", O_RDONLY);
 
 	close(wfd);
