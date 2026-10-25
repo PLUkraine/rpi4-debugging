@@ -28,3 +28,7 @@ CONFIG_DYNAMIC_FTRACE=y           # slides page 213
 CONFIG_IRQSOFF_TRACER=y           # slides page 217
 CONFIG_HWLAT_TRACER=y             # slides page 219
 CONFIG_UPROBE_EVENTS=y            # needed for perf probe --source=. -x ./crc_random main:35 crc
+
+
+CONFIG_IKCONFIG=y                 # materializes kernel compilation flags 
+CONFIG_IKCONFIG_PROC=y            # in /proc/config.gz, e.g. `zcat /proc/config.gz`
