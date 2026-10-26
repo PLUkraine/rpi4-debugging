@@ -26,3 +26,6 @@ gpu_mem_1024=100
 arm_64bit=1
 
 enable_uart=1
+# disable EEPROM scan on UART2 pins at boot time
+force_eeprom_read=0
+disable_poe_fan=1
